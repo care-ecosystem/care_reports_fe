@@ -8,7 +8,7 @@ export const ROUTES = {
 
   // User routes
   REPORTS: {
-    GENERATE: "/reports/generate",
+    GENERATE: "reports/generate",
     PREVIEW: "/reports/preview",
   },
 } as const;
