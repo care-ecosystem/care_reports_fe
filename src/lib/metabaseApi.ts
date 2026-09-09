@@ -151,24 +151,53 @@ export const getDashboardCards = async (
 };
 
 /**
+ * Generate a random ID for Metabase parameters
+ */
+const generateParameterId = (): string => {
+  return Math.random().toString(36).substring(2, 10);
+};
+
+/**
  * Fetch card data (table rows) from Metabase (Direct Mode)
  * @param dashboardUrl Metabase dashboard URL (contains base URL)
  * @param cardId Card ID
+ * @param dateFrom Optional start date for filtering
+ * @param dateTo Optional end date for filtering
+ * @param dateFieldName Optional date field template-tag name
  * @returns Card data with columns and rows
  */
 const getCardDataDirect = async (
   dashboardUrl: string,
   cardId: number,
+  dateFrom?: string,
+  dateTo?: string,
+  dateFieldName?: string,
 ): Promise<MetabaseCardData> => {
   const uuid = extractDashboardUUID(dashboardUrl);
   if (!uuid) throw new Error("Invalid dashboard URL");
 
   const baseUrl = new URL(dashboardUrl).origin;
 
+  // Build parameters for date filtering
+  const parameters = [];
+  if (dateFrom && dateTo && dateFieldName) {
+    parameters.push({
+      type: "date/all-options",
+      value: `${dateFrom}~${dateTo}`,
+      id: generateParameterId(),
+      target: [
+        "dimension",
+        ["template-tag", dateFieldName],
+        { "stage-number": 0 },
+      ],
+    });
+  }
+
   // Note: This might need adjustment based on actual Metabase API
   // Some Metabase instances use /api/public/card/:uuid/query
+  const parametersString = encodeURIComponent(JSON.stringify(parameters));
   const response = await fetch(
-    `${baseUrl}/api/public/card/${uuid}/query/json?parameters=[]`,
+    `${baseUrl}/api/public/card/${uuid}/query/json?parameters=${parametersString}`,
   );
 
   if (!response.ok) {
@@ -185,12 +214,33 @@ const getCardDataDirect = async (
  * Fetch card data (table rows) from Metabase (Proxy Mode)
  * @param proxyUrl Proxy server URL
  * @param cardId Card ID
+ * @param dateFrom Optional start date for filtering
+ * @param dateTo Optional end date for filtering
+ * @param dateFieldName Optional date field template-tag name
  * @returns Card data with columns and rows
  */
 const getCardDataProxy = async (
   proxyUrl: string,
   cardId: number,
+  dateFrom?: string,
+  dateTo?: string,
+  dateFieldName?: string,
 ): Promise<MetabaseCardData> => {
+  // Build parameters for date filtering
+  const parameters = [];
+  if (dateFrom && dateTo && dateFieldName) {
+    parameters.push({
+      type: "date/all-options",
+      value: `${dateFrom}~${dateTo}`,
+      id: generateParameterId(),
+      target: [
+        "dimension",
+        ["template-tag", dateFieldName],
+        { "stage-number": 0 },
+      ],
+    });
+  }
+
   const response = await fetch(proxyUrl, {
     method: "POST",
     headers: {
@@ -199,7 +249,7 @@ const getCardDataProxy = async (
     body: JSON.stringify({
       action: "query_card",
       cardId,
-      parameters: [],
+      parameters,
     }),
   });
 
@@ -227,12 +277,18 @@ const getCardDataProxy = async (
  * @param config Metabase configuration
  * @param dashboardUrl Dashboard URL (direct mode)
  * @param cardId Card ID
+ * @param dateFrom Optional start date for filtering
+ * @param dateTo Optional end date for filtering
+ * @param dateFieldName Optional date field template-tag name
  * @returns Card data with columns and rows
  */
 export const getCardData = async (
   config: MetabaseConfig,
   dashboardUrl: string,
   cardId: number,
+  dateFrom?: string,
+  dateTo?: string,
+  dateFieldName?: string,
 ): Promise<MetabaseCardData> => {
   let data: MetabaseCardData;
 
@@ -240,9 +296,9 @@ export const getCardData = async (
     if (!config.proxyUrl) {
       throw new Error("Proxy URL is required for proxy mode");
     }
-    data = await getCardDataProxy(config.proxyUrl, cardId);
+    data = await getCardDataProxy(config.proxyUrl, cardId, dateFrom, dateTo, dateFieldName);
   } else {
-    data = await getCardDataDirect(dashboardUrl, cardId);
+    data = await getCardDataDirect(dashboardUrl, cardId, dateFrom, dateTo, dateFieldName);
   }
 
   // Normalize the data format
@@ -254,14 +310,20 @@ export const getCardData = async (
  * @param config Metabase configuration
  * @param dashboardUrl Dashboard URL (direct mode)
  * @param cardId Card ID
+ * @param dateFrom Optional start date for filtering
+ * @param dateTo Optional end date for filtering
+ * @param dateFieldName Optional date field template-tag name
  * @returns Preview data
  */
 export const getCardDataPreview = async (
   config: MetabaseConfig,
   dashboardUrl: string,
   cardId: number,
+  dateFrom?: string,
+  dateTo?: string,
+  dateFieldName?: string,
 ): Promise<CardDataPreview> => {
-  const fullData = await getCardData(config, dashboardUrl, cardId);
+  const fullData = await getCardData(config, dashboardUrl, cardId, dateFrom, dateTo, dateFieldName);
 
   return {
     totalRows: fullData.rows.length,

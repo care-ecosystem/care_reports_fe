@@ -21,6 +21,8 @@ export default function GenerateReportPage({ facilityId }: Props) {
   const [cardPreview, setCardPreview] = useState<CardDataPreview | null>(null);
   const [isLoadingCards, setIsLoadingCards] = useState(false);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
+  const [dateFrom, setDateFrom] = useState<string>("");
+  const [dateTo, setDateTo] = useState<string>("");
 
   // Load config and dashboards on mount
   useEffect(() => {
@@ -72,9 +74,15 @@ export default function GenerateReportPage({ facilityId }: Props) {
       });
   }, [selectedDashboard, config.metabase]);
 
-  // Load preview when card is selected
+  // Load preview when card AND dates are selected
   useEffect(() => {
     if (!selectedCard || !selectedDashboard) {
+      setCardPreview(null);
+      return;
+    }
+
+    // Wait for dates to be selected before loading preview
+    if (!dateFrom || !dateTo) {
       setCardPreview(null);
       return;
     }
@@ -88,7 +96,10 @@ export default function GenerateReportPage({ facilityId }: Props) {
     getCardDataPreview(
       config.metabase,
       selectedDashboard.url,
-      selectedCard.card_id
+      selectedCard.card_id,
+      dateFrom,
+      dateTo,
+      selectedDashboard.dateFieldName
     )
       .then((preview) => {
         setCardPreview(preview);
@@ -101,7 +112,7 @@ export default function GenerateReportPage({ facilityId }: Props) {
       .finally(() => {
         setIsLoadingPreview(false);
       });
-  }, [selectedCard, selectedDashboard, config.metabase]);
+  }, [selectedCard, selectedDashboard, dateFrom, dateTo, config.metabase]);
 
   const handlePreviewReport = () => {
     if (!selectedDashboard || !selectedCard) {
@@ -109,16 +120,35 @@ export default function GenerateReportPage({ facilityId }: Props) {
       return;
     }
 
-    // Navigate to preview page with dashboard and card IDs
-    navigate(
-      getRoutePath.previewReport(
-        facilityId,
-        selectedDashboard.url,
-        selectedCard.card_id.toString(),
-        selectedCard.card.name,
-        selectedDashboard.name
-      )
-    );
+    if (!dateFrom || !dateTo) {
+      toast.error("Please select date range (From and To dates)");
+      return;
+    }
+
+    // Validate date range
+    const fromDate = new Date(dateFrom);
+    const toDate = new Date(dateTo);
+    if (fromDate > toDate) {
+      toast.error("'From' date must be before 'To' date");
+      return;
+    }
+
+    // Navigate to preview page with dashboard, card IDs, and date range
+    const params = new URLSearchParams({
+      dashboardUrl: selectedDashboard.url,
+      cardId: selectedCard.card_id.toString(),
+      cardName: selectedCard.card.name,
+      dashboardName: selectedDashboard.name,
+      dateFrom,
+      dateTo,
+    });
+
+    // Add date field name if available
+    if (selectedDashboard.dateFieldName) {
+      params.set("dateFieldName", selectedDashboard.dateFieldName);
+    }
+
+    navigate(`/facility/${facilityId}/reports/preview?${params.toString()}`);
   };
 
   if (dashboards.length === 0) {
@@ -225,27 +255,73 @@ export default function GenerateReportPage({ facilityId }: Props) {
               )}
 
               {selectedCard && (
-                <div className="mt-2 flex items-center gap-2 text-sm">
-                  <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">
-                    📊 {selectedCard.card.display}
-                  </span>
-                  <span className="text-gray-600">Type: {selectedCard.card.display}</span>
+                <div className="mt-2 space-y-2">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded">
+                      📊 {selectedCard.card.display}
+                    </span>
+                    <span className="text-gray-600">Type: {selectedCard.card.display}</span>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    ✅ Selected! Now choose a date range to preview the data.
+                  </p>
                 </div>
               )}
             </div>
           </div>
         )}
 
+        {/* Step 3: Date Filter */}
+        {selectedCard && (
+          <div className="bg-white rounded-lg border p-6">
+            <h2 className="text-lg font-semibold mb-4">Step 3: Select Date Range *</h2>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">From Date *</label>
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  max={dateTo || undefined}
+                  className="w-full border rounded p-2"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">To Date *</label>
+                <input
+                  type="date"
+                  value={dateTo}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  min={dateFrom || undefined}
+                  className="w-full border rounded p-2"
+                  required
+                />
+              </div>
+            </div>
+
+            {dateFrom && dateTo && (
+              <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-sm">
+                <span className="text-blue-800">
+                  📅 Report will include data from <strong>{new Date(dateFrom).toLocaleDateString()}</strong> to <strong>{new Date(dateTo).toLocaleDateString()}</strong>
+                </span>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* Data Preview */}
-        {selectedCard && cardPreview && (
+        {dateFrom && dateTo && (
           <div className="bg-white rounded-lg border p-6">
             <h2 className="text-lg font-semibold mb-4">Data Preview</h2>
 
             {isLoadingPreview ? (
               <div className="flex items-center justify-center py-8">
-                <div className="text-gray-500">Loading data preview...</div>
+                <div className="text-gray-500">Loading filtered data preview...</div>
               </div>
-            ) : (
+            ) : cardPreview ? (
               <div className="space-y-4">
                 <div className="flex gap-6 text-sm">
                   <div>
@@ -305,7 +381,7 @@ export default function GenerateReportPage({ facilityId }: Props) {
                   )}
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
         )}
 
@@ -314,7 +390,8 @@ export default function GenerateReportPage({ facilityId }: Props) {
           <div className="flex justify-end">
             <button
               onClick={handlePreviewReport}
-              className="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors"
+              disabled={!dateFrom || !dateTo}
+              className="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Preview Report
               <ChevronRight className="size-4" />

@@ -44,6 +44,7 @@ export interface DashboardLink {
   name: string;
   url: string; // Direct public URL (for direct mode) or proxy URL (for proxy mode)
   dashboardId?: number; // Numeric dashboard ID for proxy mode
+  dateFieldName?: string; // Template-tag name for date filtering (e.g., "abdm_transaction.created_date")
   description?: string;
   category?: string;
   tags?: string[];

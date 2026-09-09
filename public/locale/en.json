@@ -73,5 +73,12 @@
   "reports_error_fetch_cards": "Failed to load dashboard reports",
   "reports_error_fetch_data": "Failed to load report data",
   "reports_error_generate_pdf": "Failed to generate PDF",
-  "reports_success_pdf": "PDF downloaded successfully!"
+  "reports_success_pdf": "PDF downloaded successfully!",
+  "reports_date_from": "From Date",
+  "reports_date_to": "To Date",
+  "reports_date_range": "Date Range",
+  "reports_report_period": "Report Period",
+  "reports_select_date_range": "Select Date Range",
+  "reports_date_range_required": "Please select date range (From and To dates)",
+  "reports_date_range_invalid": "'From' date must be before 'To' date"
 }
