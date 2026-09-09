@@ -96,3 +96,32 @@ Or to GitHub Pages via the included `deploy.yml` action — triggers automatical
 
 `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on every push to `main`.
 Set up **GitHub Pages** in your repo settings (Settings → Pages → Source: GitHub Actions).
+
+---
+
+## Design Documentation
+
+📋 **Complete design specs available in `/design/` folder:**
+
+- **[design/DESIGN.md](./design/DESIGN.md)** - Core features specification
+- **[design/WIREFRAMES.md](./design/WIREFRAMES.md)** - UI mockups
+- **[design/ARCHITECTURE.md](./design/ARCHITECTURE.md)** - Technical architecture
+- **[design/REPORT_GENERATION_DESIGN.md](./design/REPORT_GENERATION_DESIGN.md)** - Report generation specs
+- **[design/IMPLEMENTATION_CHECKLIST.md](./design/IMPLEMENTATION_CHECKLIST.md)** - Step-by-step implementation guide
+
+**Start here:** [design/README.md](./design/README.md)
+
+---
+
+## Features
+
+### 1. Template Configuration
+Configure branded report templates with headers, logos, descriptions, and footers.
+
+### 2. Dashboard Links Management
+Manage Metabase public dashboard URLs with categories and tags.
+
+### 3. Report Generation
+Generate PDF reports from Metabase table visualizations with custom branding.
+
+**Total Implementation Time:** ~38 hours (see [checklist](./design/IMPLEMENTATION_CHECKLIST.md))
