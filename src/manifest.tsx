@@ -5,8 +5,6 @@ import NoteCreate from "./pages/NoteCreate";
 import NoteList from "./pages/NoteList";
 import en from "../public/locale/en.json";
 
-// TODO: rename care_myplugin to your plugin name throughout this file.
-
 function PageWrapper({ children }: { children: React.ReactNode }) {
   return (
     <Suspense
@@ -22,7 +20,7 @@ function PageWrapper({ children }: { children: React.ReactNode }) {
 }
 
 const manifest = {
-  plugin: "care_myplugin", // TODO: rename
+  plugin: "care_reports",
 
   // i18n translations merged into care_fe's i18n at runtime
   i18n: { en },
@@ -73,8 +71,8 @@ const manifest = {
   // Links shown in the admin sidebar
   adminNavItems: [
     {
-      url: "/admin/myplugin/notes", // TODO: update url
-      name: "Notes",                // TODO: update name
+      url: "/admin/reports/notes",
+      name: "Notes",
       icon: <BookOpen className="size-4" />,
     },
   ],

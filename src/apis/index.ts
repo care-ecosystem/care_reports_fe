@@ -1,12 +1,8 @@
-// TODO: add your API endpoint functions here.
-// The base path matches your Django plugin name: /api/care_myplugin/
-// Update BASE when you rename your plugin.
-
 import { HttpMethod, PaginatedResponse } from "@/apis/types";
 import { request } from "@/apis/query";
 import { Note, NoteCreate, NoteUpdate } from "@/types/note";
 
-const BASE = "/api/care_myplugin"; // TODO: rename to /api/care_yourplugin
+const BASE = "/api/care_reports";
 
 export const apis = {
   notes: {

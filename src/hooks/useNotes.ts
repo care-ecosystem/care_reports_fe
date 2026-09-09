@@ -5,8 +5,8 @@ import { NoteCreate, NoteUpdate } from "@/types/note";
 
 // Query key factory — keeps cache keys consistent across hooks
 export const noteKeys = {
-  list: (facilityId: string) => ["myplugin", "notes", facilityId] as const,
-  detail: (id: string) => ["myplugin", "notes", id] as const,
+  list: (facilityId: string) => ["reports", "notes", facilityId] as const,
+  detail: (id: string) => ["reports", "notes", id] as const,
 };
 
 export function useNoteList(facilityId: string) {

@@ -1,5 +1,5 @@
 {
-  "name": "care_myplugin_fe",
+  "name": "care_reports_fe",
   "version": "0.1.0",
   "description": "A CARE frontend plugin template.",
   "main": "src/index.tsx",

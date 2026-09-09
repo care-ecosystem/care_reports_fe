@@ -1,18 +1,18 @@
 @config '../tailwind.config.js';
 
-.care-myplugin-fe-container {
+.care-reports-fe-container {
   @import 'tailwindcss/theme' layer(theme);
   @import 'tailwindcss/preflight' layer(base);
   @import 'tailwindcss/utilities' layer(utilities);
 }
 
 @layer base {
-  .care-myplugin-fe-container,
-  .care-myplugin-fe-container *,
-  .care-myplugin-fe-container ::after,
-  .care-myplugin-fe-container ::before,
-  .care-myplugin-fe-container ::backdrop,
-  .care-myplugin-fe-container ::file-selector-button {
+  .care-reports-fe-container,
+  .care-reports-fe-container *,
+  .care-reports-fe-container ::after,
+  .care-reports-fe-container ::before,
+  .care-reports-fe-container ::backdrop,
+  .care-reports-fe-container ::file-selector-button {
     border-color: var(--color-gray-200, currentcolor);
   }
 }

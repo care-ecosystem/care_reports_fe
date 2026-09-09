@@ -24,8 +24,7 @@ A starter template for building CARE frontend plugins using React + TypeScript +
 Click **Use this template** on GitHub to create your repo.
 
 ### 2. Rename the plugin
-Search and replace `care_myplugin` → `care_yourplugin` across all files.
-Update `package.json` name, `vite.config.ts` federation name, and `manifest.tsx` plugin key.
+All plugin references have been updated to `care_reports_fe`.
 
 ### 3. Install dependencies
 ```bash
