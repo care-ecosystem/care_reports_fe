@@ -4,7 +4,8 @@ export interface MetabaseDashboard {
   id: number;
   name: string;
   description: string | null;
-  ordered_cards: MetabaseCard[];
+  ordered_cards?: MetabaseCard[]; // Direct API uses this
+  dashcards?: MetabaseCard[]; // Proxy API uses this
   parameters: MetabaseParameter[];
 }
 
@@ -31,13 +32,30 @@ export interface MetabaseParameter {
   default?: any;
 }
 
+// Column definition from API
+export interface MetabaseColumn {
+  name: string;
+  display_name: string;
+  base_type: string;
+  semantic_type?: string;
+}
+
+// Direct API response format
 export interface MetabaseCardData {
-  columns: string[];
+  columns?: string[]; // Direct API uses simple string array
+  cols?: MetabaseColumn[]; // Proxy API uses detailed column objects
   rows: any[][];
   insights?: any[];
   row_count?: number;
   status?: string;
   json_query?: Record<string, any>;
+}
+
+// Proxy API wraps response in data object
+export interface ProxyCardDataResponse {
+  data: MetabaseCardData;
+  status: string;
+  row_count: number;
 }
 
 export interface CardDataPreview {

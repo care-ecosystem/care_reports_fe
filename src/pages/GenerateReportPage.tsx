@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { FileText, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { navigate } from "raviger";
-import { getDashboards } from "@/lib/storage";
+import { getDashboards, getTemplateConfig, getDefaultTemplateConfig } from "@/lib/storage";
 import { getDashboardCards, getCardDataPreview } from "@/lib/metabaseApi";
-import type { DashboardLink } from "@/types/reports";
+import type { DashboardLink, ReportTemplateConfig } from "@/types/reports";
 import type { MetabaseCard, CardDataPreview } from "@/types/metabase";
 
 export default function GenerateReportPage() {
+  const [config, setConfig] = useState<ReportTemplateConfig>(getDefaultTemplateConfig());
   const [dashboards, setDashboards] = useState<DashboardLink[]>([]);
   const [selectedDashboard, setSelectedDashboard] = useState<DashboardLink | null>(null);
   const [availableCards, setAvailableCards] = useState<MetabaseCard[]>([]);
@@ -16,8 +17,15 @@ export default function GenerateReportPage() {
   const [isLoadingCards, setIsLoadingCards] = useState(false);
   const [isLoadingPreview, setIsLoadingPreview] = useState(false);
 
-  // Load dashboards on mount
+  // Load config and dashboards on mount
   useEffect(() => {
+    const savedConfig = getTemplateConfig();
+    if (savedConfig) {
+      setConfig(savedConfig);
+    } else {
+      // Initialize with default if no saved config
+      setConfig(getDefaultTemplateConfig());
+    }
     const allDashboards = getDashboards();
     const activeDashboards = allDashboards.filter(d => d.status === "active");
     setDashboards(activeDashboards);
@@ -32,8 +40,17 @@ export default function GenerateReportPage() {
       return;
     }
 
+    if (!config.metabase) {
+      toast.error("Metabase configuration not found. Please configure the system first.");
+      return;
+    }
+
     setIsLoadingCards(true);
-    getDashboardCards(selectedDashboard.url)
+    getDashboardCards(
+      config.metabase,
+      selectedDashboard.url,
+      selectedDashboard.dashboardId
+    )
       .then((cards) => {
         setAvailableCards(cards);
         if (cards.length === 0) {
@@ -42,13 +59,13 @@ export default function GenerateReportPage() {
       })
       .catch((error) => {
         console.error("Failed to load dashboard cards:", error);
-        toast.error("Failed to load dashboard. Please check the URL.");
+        toast.error("Failed to load dashboard. Please check the configuration.");
         setAvailableCards([]);
       })
       .finally(() => {
         setIsLoadingCards(false);
       });
-  }, [selectedDashboard]);
+  }, [selectedDashboard, config.metabase]);
 
   // Load preview when card is selected
   useEffect(() => {
@@ -57,8 +74,17 @@ export default function GenerateReportPage() {
       return;
     }
 
+    if (!config.metabase) {
+      toast.error("Metabase configuration not found. Please configure the system first.");
+      return;
+    }
+
     setIsLoadingPreview(true);
-    getCardDataPreview(selectedDashboard.url, selectedCard.card_id)
+    getCardDataPreview(
+      config.metabase,
+      selectedDashboard.url,
+      selectedCard.card_id
+    )
       .then((preview) => {
         setCardPreview(preview);
       })
@@ -70,7 +96,7 @@ export default function GenerateReportPage() {
       .finally(() => {
         setIsLoadingPreview(false);
       });
-  }, [selectedCard, selectedDashboard]);
+  }, [selectedCard, selectedDashboard, config.metabase]);
 
   const handlePreviewReport = () => {
     if (!selectedDashboard || !selectedCard) {
@@ -79,9 +105,14 @@ export default function GenerateReportPage() {
     }
 
     // Navigate to preview page with dashboard and card IDs
-    navigate(
-      `/reports/preview?dashboardUrl=${encodeURIComponent(selectedDashboard.url)}&cardId=${selectedCard.card_id}&cardName=${encodeURIComponent(selectedCard.card.name)}&dashboardName=${encodeURIComponent(selectedDashboard.name)}`
-    );
+    const params = new URLSearchParams({
+      dashboardUrl: selectedDashboard.url,
+      cardId: selectedCard.card_id.toString(),
+      cardName: selectedCard.card.name,
+      dashboardName: selectedDashboard.name,
+    });
+
+    navigate(`/reports/preview?${params.toString()}`);
   };
 
   if (dashboards.length === 0) {

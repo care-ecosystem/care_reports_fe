@@ -12,7 +12,7 @@ import {
 } from "@/lib/storage";
 import { convertImageToBase64, validateImageFile } from "@/lib/imageUtils";
 import { isValidMetabaseUrl } from "@/lib/urlUtils";
-import type { ReportTemplateConfig, DashboardLink, LogoPosition } from "@/types/reports";
+import type { ReportTemplateConfig, DashboardLink, LogoPosition, MetabaseConfig } from "@/types/reports";
 
 export default function ConfigurationPage() {
   const [activeTab, setActiveTab] = useState<"template" | "dashboards">("template");
@@ -31,6 +31,9 @@ export default function ConfigurationPage() {
     const savedConfig = getTemplateConfig();
     if (savedConfig) {
       setConfig(savedConfig);
+    } else {
+      // Initialize with default if no saved config
+      setConfig(getDefaultTemplateConfig());
     }
     setDashboards(getDashboards());
     setIsLoading(false);
@@ -196,6 +199,64 @@ export default function ConfigurationPage() {
       {/* Template Configuration Tab */}
       {activeTab === "template" && (
         <div className="space-y-6">
+          {/* Metabase Settings Section */}
+          <div className="bg-white rounded-lg border p-6 space-y-4">
+            <h2 className="text-lg font-semibold">Metabase Settings</h2>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">Connection Mode</label>
+              <div className="flex gap-4">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="metabase-mode"
+                    value="direct"
+                    checked={config.metabase?.mode === "direct"}
+                    onChange={(e) => setConfig({
+                      ...config,
+                      metabase: { ...config.metabase, mode: "direct" }
+                    })}
+                    className="text-blue-600"
+                  />
+                  <span>Direct (Public URL)</span>
+                </label>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="metabase-mode"
+                    value="proxy"
+                    checked={config.metabase?.mode === "proxy"}
+                    onChange={(e) => setConfig({
+                      ...config,
+                      metabase: { ...config.metabase, mode: "proxy" }
+                    })}
+                    className="text-blue-600"
+                  />
+                  <span>Proxy</span>
+                </label>
+              </div>
+            </div>
+
+            {config.metabase?.mode === "proxy" && (
+              <div>
+                <label className="block text-sm font-medium mb-2">Proxy URL</label>
+                <input
+                  type="url"
+                  value={config.metabase?.proxyUrl || ""}
+                  onChange={(e) => setConfig({
+                    ...config,
+                    metabase: { ...config.metabase, proxyUrl: e.target.value }
+                  })}
+                  className="w-full border rounded p-2"
+                  placeholder="https://metabase-proxy.care-ecosystem.workers.dev/"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the proxy server URL that handles Metabase API requests
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* Header Section */}
           <div className="bg-white rounded-lg border p-6 space-y-4">
             <h2 className="text-lg font-semibold">Header Configuration</h2>
@@ -479,6 +540,7 @@ export default function ConfigurationPage() {
       {showDashboardModal && (
         <DashboardModal
           dashboard={editingDashboard}
+          metabaseConfig={config.metabase || { mode: "direct", proxyUrl: undefined }}
           onSave={handleSaveDashboard}
           onClose={() => {
             setShowDashboardModal(false);
@@ -493,16 +555,19 @@ export default function ConfigurationPage() {
 // Dashboard Modal Component
 function DashboardModal({
   dashboard,
+  metabaseConfig,
   onSave,
   onClose,
 }: {
   dashboard: DashboardLink | null;
+  metabaseConfig: MetabaseConfig;
   onSave: (dashboard: Omit<DashboardLink, "id" | "createdAt" | "updatedAt">) => void;
   onClose: () => void;
 }) {
   const [formData, setFormData] = useState({
     name: dashboard?.name || "",
     url: dashboard?.url || "",
+    dashboardId: dashboard?.dashboardId,
     description: dashboard?.description || "",
     category: dashboard?.category || "",
     tags: dashboard?.tags || [],
@@ -512,14 +577,28 @@ function DashboardModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.url) {
-      toast.error("Name and URL are required");
+    if (!formData.name) {
+      toast.error("Dashboard name is required");
       return;
     }
 
-    if (!isValidMetabaseUrl(formData.url)) {
-      toast.error("Invalid Metabase URL. Must be a public dashboard URL.");
-      return;
+    if (metabaseConfig.mode === "direct") {
+      if (!formData.url) {
+        toast.error("Dashboard URL is required");
+        return;
+      }
+      if (!isValidMetabaseUrl(formData.url)) {
+        toast.error("Invalid Metabase URL. Must be a public dashboard URL.");
+        return;
+      }
+    } else {
+      // Proxy mode
+      if (formData.dashboardId === undefined || formData.dashboardId === null) {
+        toast.error("Dashboard ID is required");
+        return;
+      }
+      // For proxy mode, url stores the proxy URL
+      formData.url = metabaseConfig.proxyUrl || "";
     }
 
     onSave(formData);
@@ -551,18 +630,39 @@ function DashboardModal({
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium mb-1">Metabase Public URL *</label>
-              <input
-                type="url"
-                value={formData.url}
-                onChange={(e) => setFormData({ ...formData, url: e.target.value })}
-                className="w-full border rounded p-2"
-                placeholder="https://metabase.../public/dashboard/..."
-                required
-              />
-              <p className="text-xs text-gray-500 mt-1">Must be a public Metabase dashboard URL</p>
-            </div>
+            {metabaseConfig.mode === "direct" ? (
+              <div>
+                <label className="block text-sm font-medium mb-1">Metabase Public URL *</label>
+                <input
+                  type="url"
+                  value={formData.url}
+                  onChange={(e) => setFormData({ ...formData, url: e.target.value })}
+                  className="w-full border rounded p-2"
+                  placeholder="https://metabase.../public/dashboard/..."
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">Must be a public Metabase dashboard URL</p>
+              </div>
+            ) : (
+              <div>
+                <label className="block text-sm font-medium mb-1">Dashboard ID *</label>
+                <input
+                  type="number"
+                  value={formData.dashboardId ?? ""}
+                  onChange={(e) => setFormData({
+                    ...formData,
+                    dashboardId: e.target.value ? parseInt(e.target.value, 10) : undefined
+                  })}
+                  className="w-full border rounded p-2"
+                  placeholder="7"
+                  min="1"
+                  required
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Enter the numeric dashboard ID (e.g., 7)
+                </p>
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-medium mb-1">Description</label>

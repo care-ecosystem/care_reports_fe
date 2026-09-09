@@ -4,6 +4,7 @@ import { Settings, FileText } from "lucide-react";
 import ConfigurationPage from "./pages/ConfigurationPage";
 import GenerateReportPage from "./pages/GenerateReportPage";
 import ReportPreviewPage from "./pages/ReportPreviewPage";
+import { ROUTES, NAVIGATION } from "./constants/routes";
 import en from "../public/locale/en.json";
 
 function PageWrapper({ children }: { children: React.ReactNode }) {
@@ -29,20 +30,20 @@ const manifest = {
   // URL routes handled by this plugin
   routes: {
     // Admin configuration page
-    "/admin/reports/configuration": () => (
+    [ROUTES.ADMIN.CONFIGURATION]: () => (
       <PageWrapper>
         <ConfigurationPage />
       </PageWrapper>
     ),
 
     // Report generation pages
-    "/reports/generate": () => (
+    [ROUTES.REPORTS.GENERATE]: () => (
       <PageWrapper>
         <GenerateReportPage />
       </PageWrapper>
     ),
 
-    "/reports/preview": () => (
+    [ROUTES.REPORTS.PREVIEW]: () => (
       <PageWrapper>
         <ReportPreviewPage />
       </PageWrapper>
@@ -58,8 +59,8 @@ const manifest = {
   // Links shown in the main sidebar (all authenticated users)
   navItems: [
     {
-      url: "/reports/generate",
-      name: "Generate Report",
+      url: NAVIGATION.MAIN[0].url,
+      name: NAVIGATION.MAIN[0].defaultName,
       icon: <FileText className="size-4" />,
     },
   ],
@@ -67,8 +68,8 @@ const manifest = {
   // Links shown in the admin sidebar
   adminNavItems: [
     {
-      url: "/admin/reports/configuration",
-      name: "Report Configuration",
+      url: NAVIGATION.ADMIN[0].url,
+      name: NAVIGATION.ADMIN[0].defaultName,
       icon: <Settings className="size-4" />,
     },
   ],

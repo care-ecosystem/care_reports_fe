@@ -16,7 +16,19 @@ const DASHBOARDS_KEY = "care_reports_dashboards";
 export const getTemplateConfig = (): ReportTemplateConfig | null => {
   try {
     const data = localStorage.getItem(TEMPLATE_KEY);
-    return data ? JSON.parse(data) : null;
+    if (!data) return null;
+
+    const config = JSON.parse(data) as ReportTemplateConfig;
+
+    // Backward compatibility: Add metabase config if missing
+    if (!config.metabase) {
+      config.metabase = {
+        mode: "direct",
+        proxyUrl: undefined,
+      };
+    }
+
+    return config;
   } catch (error) {
     console.error("Failed to read template config:", error);
     return null;
@@ -44,6 +56,10 @@ export const saveTemplateConfig = (config: ReportTemplateConfig): void => {
 export const getDefaultTemplateConfig = (): ReportTemplateConfig => {
   return {
     version: "1.0",
+    metabase: {
+      mode: "direct",
+      proxyUrl: undefined,
+    },
     header: {
       text: "",
       primaryLogo: { dataUrl: "", alt: "", position: "left" },

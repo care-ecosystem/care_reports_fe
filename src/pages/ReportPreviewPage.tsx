@@ -30,6 +30,10 @@ export default function ReportPreviewPage() {
     const config = getTemplateConfig();
     if (config) {
       setTemplateConfig(config);
+    } else {
+      setError("Template configuration not found. Please configure the template first.");
+      setIsLoading(false);
+      return;
     }
 
     // Load card data
@@ -39,8 +43,18 @@ export default function ReportPreviewPage() {
       return;
     }
 
+    if (!config.metabase) {
+      setError("Metabase configuration not found. Please configure the system first.");
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
-    getCardData(dashboardUrl, cardId)
+    getCardData(
+      config.metabase,
+      dashboardUrl,
+      cardId
+    )
       .then((data) => {
         setCardData(data);
         setError(null);
