@@ -3,13 +3,13 @@
 export const ROUTES = {
   // Admin routes
   ADMIN: {
-    CONFIGURATION: "/admin/reports/configuration",
+    CONFIGURATION: "/facility/:facilityId/reports/configuration",
   },
 
   // User routes
   REPORTS: {
-    GENERATE: "reports/generate",
-    PREVIEW: "/reports/preview",
+    GENERATE: "/facility/:facilityId/reports/generate",
+    PREVIEW: "/facility/:facilityId/reports/preview",
   },
 } as const;
 
@@ -19,32 +19,45 @@ export const NAVIGATION = {
   MAIN: [
     {
       key: "generate_report",
-      url: ROUTES.REPORTS.GENERATE,
+      url: "reports/generate",
       translationKey: "reports_generate",
       defaultName: "Generate Report",
+    },
+     {
+      key: "configure_templates",
+      url: "reports/configuration",
+      translationKey: "reports_configuration",
+      defaultName: "Report Configuration",
     },
   ],
 
   // Admin sidebar navigation
   ADMIN: [
-    {
-      key: "configure_templates",
-      url: ROUTES.ADMIN.CONFIGURATION,
-      translationKey: "reports_configuration",
-      defaultName: "Report Configuration",
-    },
+    // {
+    //   key: "configure_templates",
+    //   url: "/facility/:facilityId/reports/configuration",
+    //   translationKey: "reports_configuration",
+    //   defaultName: "Report Configuration",
+    // },
   ],
 } as const;
 
 // Helper to get route paths
 export const getRoutePath = {
-  adminConfiguration: () => ROUTES.ADMIN.CONFIGURATION,
-  generateReport: () => ROUTES.REPORTS.GENERATE,
-  previewReport: (dashboardId?: string, cardId?: string) => {
+  adminConfiguration: (facilityId: string) =>
+    `/facility/${facilityId}/reports/configuration`,
+
+  generateReport: (facilityId: string) =>
+    `/facility/${facilityId}/reports/generate`,
+
+  previewReport: (facilityId: string, dashboardUrl?: string, cardId?: string, cardName?: string, dashboardName?: string) => {
     const params = new URLSearchParams();
-    if (dashboardId) params.set("dashboardId", dashboardId);
+    if (dashboardUrl) params.set("dashboardUrl", dashboardUrl);
     if (cardId) params.set("cardId", cardId);
+    if (cardName) params.set("cardName", cardName);
+    if (dashboardName) params.set("dashboardName", dashboardName);
     const query = params.toString();
-    return query ? `${ROUTES.REPORTS.PREVIEW}?${query}` : ROUTES.REPORTS.PREVIEW;
+    const basePath = `/facility/${facilityId}/reports/preview`;
+    return query ? `${basePath}?${query}` : basePath;
   },
 } as const;

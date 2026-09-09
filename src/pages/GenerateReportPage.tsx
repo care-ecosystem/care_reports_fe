@@ -4,10 +4,15 @@ import { toast } from "sonner";
 import { navigate } from "raviger";
 import { getDashboards, getTemplateConfig, getDefaultTemplateConfig } from "@/lib/storage";
 import { getDashboardCards, getCardDataPreview } from "@/lib/metabaseApi";
+import { getRoutePath } from "@/constants/routes";
 import type { DashboardLink, ReportTemplateConfig } from "@/types/reports";
 import type { MetabaseCard, CardDataPreview } from "@/types/metabase";
 
-export default function GenerateReportPage() {
+interface Props {
+  facilityId: string;
+}
+
+export default function GenerateReportPage({ facilityId }: Props) {
   const [config, setConfig] = useState<ReportTemplateConfig>(getDefaultTemplateConfig());
   const [dashboards, setDashboards] = useState<DashboardLink[]>([]);
   const [selectedDashboard, setSelectedDashboard] = useState<DashboardLink | null>(null);
@@ -105,14 +110,15 @@ export default function GenerateReportPage() {
     }
 
     // Navigate to preview page with dashboard and card IDs
-    const params = new URLSearchParams({
-      dashboardUrl: selectedDashboard.url,
-      cardId: selectedCard.card_id.toString(),
-      cardName: selectedCard.card.name,
-      dashboardName: selectedDashboard.name,
-    });
-
-    navigate(`/reports/preview?${params.toString()}`);
+    navigate(
+      getRoutePath.previewReport(
+        facilityId,
+        selectedDashboard.url,
+        selectedCard.card_id.toString(),
+        selectedCard.card.name,
+        selectedDashboard.name
+      )
+    );
   };
 
   if (dashboards.length === 0) {
@@ -128,7 +134,7 @@ export default function GenerateReportPage() {
             Please add dashboards in the configuration page before generating reports.
           </p>
           <button
-            onClick={() => navigate("/admin/reports/configuration")}
+            onClick={() => navigate(getRoutePath.adminConfiguration(facilityId))}
             className="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors"
           >
             Go to Configuration

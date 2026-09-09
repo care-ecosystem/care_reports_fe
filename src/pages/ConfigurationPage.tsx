@@ -14,7 +14,11 @@ import { convertImageToBase64, validateImageFile } from "@/lib/imageUtils";
 import { isValidMetabaseUrl } from "@/lib/urlUtils";
 import type { ReportTemplateConfig, DashboardLink, LogoPosition, MetabaseConfig } from "@/types/reports";
 
-export default function ConfigurationPage() {
+interface Props {
+  facilityId: string;
+}
+
+export default function ConfigurationPage({ facilityId }: Props) {
   const [activeTab, setActiveTab] = useState<"template" | "dashboards">("template");
 
   // Template state

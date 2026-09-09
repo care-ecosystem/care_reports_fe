@@ -30,22 +30,22 @@ const manifest = {
   // URL routes handled by this plugin
   routes: {
     // Admin configuration page
-    [ROUTES.ADMIN.CONFIGURATION]: () => (
+    [ROUTES.ADMIN.CONFIGURATION]: ({ facilityId }: { facilityId: string }) => (
       <PageWrapper>
-        <ConfigurationPage />
+        <ConfigurationPage facilityId={facilityId} />
       </PageWrapper>
     ),
 
     // Report generation pages
-    [ROUTES.REPORTS.GENERATE]: () => (
+    [ROUTES.REPORTS.GENERATE]: ({ facilityId }: { facilityId: string }) => (
       <PageWrapper>
-        <GenerateReportPage />
+        <GenerateReportPage facilityId={facilityId} />
       </PageWrapper>
     ),
 
-    [ROUTES.REPORTS.PREVIEW]: () => (
+    [ROUTES.REPORTS.PREVIEW]: ({ facilityId }: { facilityId: string }) => (
       <PageWrapper>
-        <ReportPreviewPage />
+        <ReportPreviewPage facilityId={facilityId} />
       </PageWrapper>
     ),
   },
@@ -63,16 +63,15 @@ const manifest = {
       name: NAVIGATION.MAIN[0].defaultName,
       icon: <FileText className="size-4" />,
     },
-  ],
-
-  // Links shown in the admin sidebar
-  adminNavItems: [
     {
-      url: NAVIGATION.ADMIN[0].url,
-      name: NAVIGATION.ADMIN[0].defaultName,
+      url: NAVIGATION.MAIN[1].url,
+      name: NAVIGATION.MAIN[1].defaultName,
       icon: <Settings className="size-4" />,
     },
   ],
+
+  // Links shown in the admin sidebar
+  adminNavItems: [],
 
   extends: [],
 };

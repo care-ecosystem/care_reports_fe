@@ -6,10 +6,15 @@ import { getTemplateConfig, getDefaultTemplateConfig } from "@/lib/storage";
 import { getCardData } from "@/lib/metabaseApi";
 import { generateReportPDF } from "@/lib/pdfGenerator";
 import { printReport } from "@/lib/printService";
+import { getRoutePath } from "@/constants/routes";
 import type { ReportTemplateConfig } from "@/types/reports";
 import type { MetabaseCardData } from "@/types/metabase";
 
-export default function ReportPreviewPage() {
+interface Props {
+  facilityId: string;
+}
+
+export default function ReportPreviewPage({ facilityId }: Props) {
   const [queryParams] = useQueryParams();
   const dashboardUrl = queryParams.dashboardUrl as string;
   const cardId = parseInt(queryParams.cardId as string);
@@ -110,7 +115,7 @@ export default function ReportPreviewPage() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
           <div className="text-red-600 text-xl mb-2">❌ {error}</div>
           <button
-            onClick={() => navigate("/reports/generate")}
+            onClick={() => navigate(getRoutePath.generateReport(facilityId))}
             className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors mt-4"
           >
             ← Back to Selection
@@ -129,7 +134,7 @@ export default function ReportPreviewPage() {
       {/* Header Actions */}
       <div className="bg-white border-b px-6 py-4 flex justify-between items-center no-print">
         <button
-          onClick={() => navigate("/reports/generate")}
+          onClick={() => navigate(getRoutePath.generateReport(facilityId))}
           className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 hover:bg-gray-100 hover:text-gray-900 rounded-md text-sm font-semibold transition-colors"
         >
           <ArrowLeft className="size-4" />
