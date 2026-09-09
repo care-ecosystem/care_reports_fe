@@ -43,6 +43,12 @@ In your care_fe environment config, add:
 http://localhost:5177/assets/remoteEntry.js
 ```
 
+### 6. Production URL with care_fe
+In your care_fe environment config, add:
+```
+https://care-reports-fe.pages.dev/assets/remoteEntry.js
+```
+
 ## Architecture
 
 | File | Purpose |
