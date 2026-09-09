@@ -456,7 +456,7 @@ export default function ConfigurationPage() {
             </button>
             <button
               onClick={handleSaveTemplate}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors"
             >
               Save Configuration
             </button>
@@ -474,7 +474,7 @@ export default function ConfigurationPage() {
                 setEditingDashboard(null);
                 setShowDashboardModal(true);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors"
             >
               <Plus className="size-4" />
               Add Dashboard
@@ -515,7 +515,7 @@ export default function ConfigurationPage() {
                           setEditingDashboard(dashboard);
                           setShowDashboardModal(true);
                         }}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded"
+                        className="p-2 text-primary-700 hover:bg-gray-100 rounded transition-colors"
                         title="Edit"
                       >
                         <Eye className="size-4" />
@@ -710,7 +710,7 @@ function DashboardModal({
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors"
               >
                 {dashboard ? "Update" : "Add"} Dashboard
               </button>

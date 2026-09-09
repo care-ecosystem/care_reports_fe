@@ -129,7 +129,7 @@ export default function GenerateReportPage() {
           </p>
           <button
             onClick={() => navigate("/admin/reports/configuration")}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors"
           >
             Go to Configuration
           </button>
@@ -308,10 +308,10 @@ export default function GenerateReportPage() {
           <div className="flex justify-end">
             <button
               onClick={handlePreviewReport}
-              className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+              className="inline-flex items-center justify-center gap-2 h-10 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors"
             >
               Preview Report
-              <ChevronRight className="size-5" />
+              <ChevronRight className="size-4" />
             </button>
           </div>
         )}

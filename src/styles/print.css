@@ -91,14 +91,14 @@
   }
 
   .report-table th {
-    background-color: #2563eb !important;
-    color: white !important;
-    font-weight: bold !important;
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  .report-table tbody tr:nth-child(even) {
+  .report-table tbody tr:hover {
     background-color: #f9fafb !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
@@ -117,7 +117,7 @@
 
   /* Ensure background colors print */
   .bg-gray-50,
-  .bg-blue-600,
+  .bg-gray-100,
   .bg-gray-800 {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;

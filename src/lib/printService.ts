@@ -129,14 +129,14 @@ export const printReport = (): void => {
           }
 
           th {
-            background-color: #2563eb !important;
-            color: white !important;
-            font-weight: 600;
+            background-color: #f3f4f6 !important;
+            color: #374151 !important;
+            font-weight: 500;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
           }
 
-          tbody tr:nth-child(even) {
+          tbody tr:hover {
             background-color: #f9fafb !important;
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;

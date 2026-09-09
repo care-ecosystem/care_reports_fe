@@ -111,7 +111,7 @@ export default function ReportPreviewPage() {
           <div className="text-red-600 text-xl mb-2">❌ {error}</div>
           <button
             onClick={() => navigate("/reports/generate")}
-            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors mt-4"
           >
             ← Back to Selection
           </button>
@@ -130,16 +130,16 @@ export default function ReportPreviewPage() {
       <div className="bg-white border-b px-6 py-4 flex justify-between items-center no-print">
         <button
           onClick={() => navigate("/reports/generate")}
-          className="flex items-center gap-2 text-gray-700 hover:text-gray-900"
+          className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 hover:bg-gray-100 hover:text-gray-900 rounded-md text-sm font-semibold transition-colors"
         >
-          <ArrowLeft className="size-5" />
+          <ArrowLeft className="size-4" />
           Back to Selection
         </button>
 
         <div className="flex gap-3">
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 px-4 py-2 border rounded hover:bg-gray-50"
+            className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 border border-gray-400 bg-white shadow-sm hover:bg-gray-100 hover:text-gray-900 rounded-md text-sm font-semibold transition-colors"
           >
             <Printer className="size-4" />
             Print
@@ -147,7 +147,7 @@ export default function ReportPreviewPage() {
           <button
             onClick={handleDownloadPDF}
             disabled={isGenerating}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center gap-2 h-9 px-4 py-2 bg-primary-700 text-white shadow-sm hover:bg-primary-700/90 rounded-md text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Download className="size-4" />
             {isGenerating ? "Generating..." : "Download PDF"}
@@ -237,30 +237,30 @@ export default function ReportPreviewPage() {
           <div className="p-6">
             <h2 className="text-xl font-bold mb-4">{cardName}</h2>
 
-            <div className="overflow-x-auto">
-              <table className="w-full border-collapse report-table">
-                <thead>
-                  <tr className="bg-blue-600 text-white">
+            <div className="rounded-md overflow-x-auto border">
+              <table className="w-full caption-bottom text-sm report-table">
+                <thead className="bg-gray-100">
+                  <tr className="divide-x border-b">
                     {cardData.columns.map((col, idx) => (
                       <th
                         key={idx}
-                        className="border border-gray-300 px-4 py-2 text-left font-semibold"
+                        className="text-gray-700 h-10 px-2 text-left align-middle font-medium whitespace-nowrap"
                       >
                         {col}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="bg-white text-base">
                   {cardData.rows.map((row, rowIdx) => (
                     <tr
                       key={rowIdx}
-                      className={rowIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                      className="divide-x hover:bg-gray-100/50 border-b transition-colors"
                     >
                       {row.map((cell, cellIdx) => (
                         <td
                           key={cellIdx}
-                          className="border border-gray-300 px-4 py-2"
+                          className="p-2 align-middle whitespace-nowrap font-medium text-gray-950"
                         >
                           {cell !== null && cell !== undefined ? String(cell) : "-"}
                         </td>
