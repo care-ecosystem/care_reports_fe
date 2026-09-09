@@ -1,8 +1,9 @@
-import { lazy, Suspense } from "react";
-import { BookOpen } from "lucide-react";
+import { Suspense } from "react";
+import { Settings, FileText } from "lucide-react";
 
-import NoteCreate from "./pages/NoteCreate";
-import NoteList from "./pages/NoteList";
+import ConfigurationPage from "./pages/ConfigurationPage";
+import GenerateReportPage from "./pages/GenerateReportPage";
+import ReportPreviewPage from "./pages/ReportPreviewPage";
 import en from "../public/locale/en.json";
 
 function PageWrapper({ children }: { children: React.ReactNode }) {
@@ -25,55 +26,50 @@ const manifest = {
   // i18n translations merged into care_fe's i18n at runtime
   i18n: { en },
 
-  // URL routes handled by this plugin.
-  // Key = path pattern (raviger syntax), Value = component factory.
+  // URL routes handled by this plugin
   routes: {
-    "/facility/:facilityId/notes": ({
-      facilityId,
-    }: {
-      facilityId: string;
-    }) => (
+    // Admin configuration page
+    "/admin/reports/configuration": () => (
       <PageWrapper>
-        <NoteList facilityId={facilityId} />
+        <ConfigurationPage />
       </PageWrapper>
     ),
 
-    "/facility/:facilityId/notes/create": ({
-      facilityId,
-    }: {
-      facilityId: string;
-    }) => (
+    // Report generation pages
+    "/reports/generate": () => (
       <PageWrapper>
-        <NoteCreate facilityId={facilityId} />
+        <GenerateReportPage />
+      </PageWrapper>
+    ),
+
+    "/reports/preview": () => (
+      <PageWrapper>
+        <ReportPreviewPage />
       </PageWrapper>
     ),
   },
 
-  // Components care_fe can inject into its own UI.
-  // care_fe accesses these via careApp.components?.ComponentName
-  components: {
-    // TODO: add or remove pluggable components
-    NoteActionButton: lazy(
-      () => import("./components/pluggables/NoteActionButton"),
-    ),
-  },
+  // Components care_fe can inject into its own UI
+  components: {},
 
-  // Encounter detail page tabs — add keys here to inject tabs.
-  // Each value is a lazy-loaded component factory.
-  encounterTabs: {
-    // TODO: add encounter tabs if needed
-    // "my_tab": lazy(() => import("./pages/MyEncounterTab")),
-  },
+  // Encounter detail page tabs
+  encounterTabs: {},
 
   // Links shown in the main sidebar (all authenticated users)
-  navItems: [],
+  navItems: [
+    {
+      url: "/reports/generate",
+      name: "Generate Report",
+      icon: <FileText className="size-4" />,
+    },
+  ],
 
   // Links shown in the admin sidebar
   adminNavItems: [
     {
-      url: "/admin/reports/notes",
-      name: "Notes",
-      icon: <BookOpen className="size-4" />,
+      url: "/admin/reports/configuration",
+      name: "Report Configuration",
+      icon: <Settings className="size-4" />,
     },
   ],
 

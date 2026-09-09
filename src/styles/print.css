@@ -1,0 +1,60 @@
+@media print {
+  /* Hide navigation, buttons, etc. */
+  nav,
+  button,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Show only report content */
+  .report-preview {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Optimize for print */
+  body {
+    background: white;
+  }
+
+  /* Page breaks */
+  .report-header,
+  .report-footer {
+    page-break-inside: avoid;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  /* Ensure logos print correctly */
+  img {
+    max-width: 100%;
+    page-break-inside: avoid;
+  }
+
+  /* Table styling for print */
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .report-table th,
+  .report-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+  }
+
+  .report-table th {
+    background-color: #f3f4f6 !important;
+    font-weight: bold;
+  }
+}
