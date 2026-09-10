@@ -20,7 +20,13 @@
     "url": "https://egov.org.in"
   },
   "license": "MIT",
-  "keywords": ["care", "plugin", "micro-frontend", "healthcare", "india"],
+  "keywords": [
+    "care",
+    "plugin",
+    "micro-frontend",
+    "healthcare",
+    "india"
+  ],
   "bugs": {
     "url": "https://github.com/care-ecosystem/care_fe_plugin_template/issues"
   },
@@ -29,8 +35,12 @@
     "@hookform/resolvers": "^5.2.2",
     "@tanstack/react-query": "^5.72.2",
     "clsx": "^2.1.1",
+    "dompurify": "^3.4.15",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
     "lucide-react": "^0.487.0",
     "raviger": "^5.0.0-2",
+    "react-dropzone": "^20.1.1",
     "react-hook-form": "^7.73.1",
     "react-i18next": "^15.4.1",
     "sonner": "^2.0.3",

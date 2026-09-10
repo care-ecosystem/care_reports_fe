@@ -1,22 +1,16 @@
-// Standalone route map — mirrors manifest.routes.
-// Keep in sync with manifest.tsx.
-// TODO: update routes to match your plugin's pages.
+// Routes for Care Reports Plugin
 
-import NoteCreate from "./pages/NoteCreate";
-import NoteList from "./pages/NoteList";
+import ConfigurationPage from "./pages/ConfigurationPage";
+import GenerateReportPage from "./pages/GenerateReportPage";
+import ReportPreviewPage from "./pages/ReportPreviewPage";
 
 const routes = {
-  "/facility/:facilityId/notes": ({
-    facilityId,
-  }: {
-    facilityId: string;
-  }) => <NoteList facilityId={facilityId} />,
+  // Admin configuration page
+  "/admin/reports/configuration": () => <ConfigurationPage />,
 
-  "/facility/:facilityId/notes/create": ({
-    facilityId,
-  }: {
-    facilityId: string;
-  }) => <NoteCreate facilityId={facilityId} />,
+  // Report generation pages
+  "/reports/generate": () => <GenerateReportPage />,
+  "/reports/preview": () => <ReportPreviewPage />,
 };
 
 export default routes;

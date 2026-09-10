@@ -1,0 +1,139 @@
+@media print {
+  /* Hide navigation, buttons, and other UI elements */
+  nav,
+  button,
+  .no-print,
+  header nav,
+  aside {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Reset body and html for print */
+  html,
+  body {
+    width: 100% !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    overflow: visible !important;
+  }
+
+  /* Ensure the container doesn't interfere */
+  .care-reports-fe-container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Show only report content - full width */
+  .report-preview,
+  #report-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+
+  /* Page breaks */
+  .report-header,
+  .report-footer {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Table handling */
+  table {
+    page-break-inside: auto;
+    break-inside: auto;
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+    break-inside: avoid;
+    break-after: auto;
+  }
+
+  /* Ensure logos and images print correctly */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Table styling for print - force colors */
+  .report-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .report-table th,
+  .report-table td {
+    border: 1px solid #000 !important;
+    padding: 8px !important;
+    text-align: left !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .report-table th {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .report-table tbody tr:hover {
+    background-color: #f9fafb !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Force borders to print */
+  .border,
+  .border-b,
+  .border-t,
+  .border-b-2,
+  .border-t-2 {
+    border-color: #000 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure background colors print */
+  .bg-gray-50,
+  .bg-gray-100,
+  .bg-gray-800 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Remove shadows and rounded corners for cleaner print */
+  * {
+    box-shadow: none !important;
+  }
+
+  /* Ensure text is black for readability */
+  p, span, div, td {
+    color: #000 !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #000 !important;
+  }
+}
